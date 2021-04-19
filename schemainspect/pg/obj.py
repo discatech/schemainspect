@@ -1643,17 +1643,17 @@ class PostgreSQL(DBInspector):
         ]  # type: list[InspectedComment]
         self.comments = od((t.key, t) for t in comments)
 
-    def filter_schema(self, schema=None, exclude_schema=None):
-        if schema and exclude_schema:
+    def filter_schema(self, include_schema=None, exclude_schema=None):
+        if include_schema and exclude_schema:
             raise ValueError("Can only have schema or exclude schema, not both")
 
         def equal_to_schema(x):
-            return x.schema == schema
+            return x.schema in include_schema
 
         def not_equal_to_exclude_schema(x):
-            return x.schema != exclude_schema
+            return x.schema not in exclude_schema
 
-        if schema:
+        if include_schema:
             comparator = equal_to_schema
         elif exclude_schema:
             comparator = not_equal_to_exclude_schema
@@ -1691,8 +1691,8 @@ class PostgreSQL(DBInspector):
 
         return d
 
-    def one_schema(self, schema):
-        self.filter_schema(schema=schema)
+    def include_schema(self, schema):
+        self.filter_schema(include_schema=schema)
 
     def exclude_schema(self, schema):
         self.filter_schema(exclude_schema=schema)
