@@ -711,14 +711,14 @@ class InspectedDomain(Inspected):
 
     @property
     def drop_statement(self):
-        return "drop domain {};".format(self.signature)
+        return "drop domain if exists {};".format(self.signature)
 
     @property
     def create_statement(self):
         T = """\
 create domain {name}
 as {_type}
-{collation}{default}{nullable}{check}
+{collation}{default}{nullable}{check};
 """
 
         sql = T.format(
@@ -913,7 +913,20 @@ class InspectedPrivilege(Inspected):
 
     @property
     def drop_statement(self):
-        return "revoke {} on {} {} from {};".format(
+        return """DO
+$$
+    BEGIN
+        IF (SELECT 1
+            FROM information_schema.tables
+            WHERE table_schema = '{}'
+              AND table_name = '{}'
+        ) THEN
+            REVOKE {} on {} {} from {};
+        END IF;
+    END
+$$;""".format(
+            self.schema,
+            self.name,
             self.privilege,
             self.object_type,
             self.quoted_full_name,
