@@ -18,7 +18,6 @@ def test_inspected_privilege():
         b2.create_statement
         == 'grant modify on function "schema"."test_function" to "test_user";'
     )
-    print(b.drop_statement)
     assert (
         b.drop_statement
         == """DO

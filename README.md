@@ -33,6 +33,14 @@ For instance, the information about a table *books* would be accessed as follows
 
 Documentation is a bit patchy at the moment. Watch this space!
 
+## Running Tests
+To run tests, use `pytest`. You must have set up your local user as a valid db user in order for this to work. 
+
+```bash
+psql -h localhost -U postgres -c "CREATE USER `whoami` SUPERUSER;"
+psql -h localhost -U postgres -c "CREATE DATABASE `whoami`;"
+pytest
+```
 
 ## Author Credits
 
