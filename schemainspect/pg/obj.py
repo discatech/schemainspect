@@ -982,7 +982,7 @@ class InspectedComment(Inspected):
     @property
     def create_statement(self):
         return "comment on {} {} is '{}';".format(
-            self.object_type, self._identifier, self.comment
+            self.object_type, self._identifier, self.comment.replace("'", "''")
         )
 
     @property

@@ -248,7 +248,7 @@ def setup_pg_schema(s):
         grant select, update, delete, insert on table films to postgres;
     """
     )
-    s.execute("comment on constraint firstkey on films is 'a constraint comment'")
+    s.execute("comment on constraint firstkey on films is E'a \\'constraint\\' comment'")
     s.execute("""CREATE VIEW v_films AS (select * from films)""")
     s.execute("""CREATE VIEW v_films2 AS (select * from v_films)""")
     s.execute(
@@ -513,7 +513,7 @@ $$;""".format(
     )
     assert (
         i.comments['constraint "public"."films"."firstkey"'].create_statement
-        == 'comment on constraint "public"."films"."firstkey" is \'a constraint comment\';'
+        == """comment on constraint "public"."films"."firstkey" is 'a ''constraint'' comment';"""
     )
 
 
