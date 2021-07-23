@@ -513,7 +513,7 @@ $$;""".format(
     )
     assert (
         i.comments['constraint "public"."films"."firstkey"'].create_statement
-        == """comment on constraint "public"."films"."firstkey" is 'a ''constraint'' comment';"""
+        == """comment on constraint "firstkey" on "public"."films" is 'a ''constraint'' comment';"""
     )
 
 
