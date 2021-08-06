@@ -977,6 +977,12 @@ class InspectedComment(Inspected):
 
     @property
     def drop_statement(self):
+        if self.object_type == "constraint":
+            return "comment on {} {} on {} is null;".format(
+                self.object_type,
+                quoted_identifier(self.name),
+                quoted_identifier(self.table, schema=self.schema)
+            )
         return "comment on {} {} is null;".format(self.object_type, self._identifier)
 
     @property
