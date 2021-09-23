@@ -997,6 +997,27 @@ class InspectedComment(Inspected):
                 quoted_identifier(self.table, schema=self.schema)
             )
 
+        if self.object_type == "column":
+            return """DO
+        $$
+            BEGIN
+                IF (SELECT 1
+                    FROM information_schema.columns
+                    WHERE table_schema = '{}'
+                      AND table_name = '{}'
+                      AND column_name = '{}'
+                ) THEN
+                    comment on {} {} is null;
+                END IF;
+            END
+        $$;""".format(
+                self.schema,
+                self.table,
+                self.name,
+                self.object_type,
+                self._identifier
+            )
+
         return """DO
     $$
         BEGIN
