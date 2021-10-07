@@ -100,7 +100,7 @@ jobs:
     working_directory: ~/circleci
     docker:
       - image: circleci/python:3.8.2
-      - image: circleci/postgres:10.10
+      - image: circleci/postgres:10
         environment:
           POSTGRES_USER: circleci
           POSTGRES_DB: circleci
@@ -112,7 +112,7 @@ jobs:
       - run:
           name: Wait for db
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
-      - run: sudo apt-get update -y && sudo apt-get install -y postgresql-client
+      - run: sudo apt-get update -y --allow-releaseinfo-change && sudo apt-get install -y postgresql-client
       - run:
           name: create postgres user
           command: psql postgresql://@localhost/circleci -c 'create role postgres'
