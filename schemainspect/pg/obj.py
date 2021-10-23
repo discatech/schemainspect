@@ -152,6 +152,32 @@ class InspectedSelectable(BaseInspectedSelectable):
 
         return alter
 
+    def drop_statement_for_existing_column(self, column_info):
+        if self.is_alterable:
+            alter = """DO
+    $$
+        BEGIN
+            IF (SELECT 1
+                FROM information_schema.columns
+                WHERE table_schema = '{a}'
+                  AND table_name = '{b}'
+                  AND column_name = '{c}'
+            ) THEN
+                alter table {d} {e};
+            END IF;
+        END
+    $$;""".format(
+                a=self.schema,
+                b=self.name,
+                c=column_info.name,
+                d=self.quoted_full_name,
+                e=column_info.drop_column_clause
+            )
+        else:
+            raise NotImplementedError  # pragma: no cover
+
+        return alter
+
     @property
     def is_partitioned(self):
         return self.relationtype == "p"
@@ -995,6 +1021,27 @@ class InspectedComment(Inspected):
                 self.object_type,
                 quoted_identifier(self.name),
                 quoted_identifier(self.table, schema=self.schema)
+            )
+
+        if self.object_type == "column":
+            return """DO
+        $$
+            BEGIN
+                IF (SELECT 1
+                    FROM information_schema.columns
+                    WHERE table_schema = '{}'
+                      AND table_name = '{}'
+                      AND column_name = '{}'
+                ) THEN
+                    comment on {} {} is null;
+                END IF;
+            END
+        $$;""".format(
+                self.schema,
+                self.table,
+                self.name,
+                self.object_type,
+                self._identifier
             )
 
         return """DO
