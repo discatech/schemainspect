@@ -1138,7 +1138,7 @@ class InspectedRowPolicy(Inspected, TableRelated):
             qual_clause = ""
 
         if self.withcheck:
-            withcheck_clause = "\nwith check {}".format(self.withcheck)
+            withcheck_clause = "\nwith check ({})".format(self.withcheck)
         else:
             withcheck_clause = ""
 
