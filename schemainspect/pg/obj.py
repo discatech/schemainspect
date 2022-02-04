@@ -1103,7 +1103,7 @@ class InspectedComment(Inspected):
         )
 
 
-RLS_POLICY_CREATE = """drop policy {name} on {table_name};
+RLS_POLICY_CREATE = """drop policy if exists {name} on {table_name};
 create policy {name}
 on {table_name}
 as {permissiveness}
@@ -1165,7 +1165,7 @@ class InspectedRowPolicy(Inspected, TableRelated):
 
     @property
     def drop_statement(self):
-        return "drop policy {} on {};".format(
+        return "drop policy if exists {} on {};".format(
             self.quoted_name, self.quoted_full_table_name
         )
 
