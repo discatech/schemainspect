@@ -145,4 +145,4 @@ with check (manager = (CURRENT_USER)::text);
 """
         )
 
-        assert t.drop_statement == 'drop policy if exists    "insert_gamer" on "public"."accounts";'
+        assert t.drop_statement == 'drop policy if exists "insert_gamer" on "public"."accounts";'
