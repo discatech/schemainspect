@@ -214,14 +214,7 @@ def test_postgres_objects():
     )
     assert (
         c.create_statement
-        == """DO
-    $$
-        BEGIN
-            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'firstkey') THEN
-                alter table "public"."films" add constraint "firstkey" PRIMARY KEY using index "firstkey";
-        END IF;
-    END
-$$;"""
+        == 'alter table "public"."films" add constraint "firstkey" PRIMARY KEY using index "firstkey";'
     )
     c2 = deepcopy(c)
     assert c == c2
@@ -229,14 +222,7 @@ $$;"""
     assert c != c2
     assert (
         c.create_statement
-        == """DO
-    $$
-        BEGIN
-            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'firstkey') THEN
-                alter table "public"."films" add constraint "firstkey" PRIMARY KEY (code);
-        END IF;
-    END
-$$;"""
+        == 'alter table "public"."films" add constraint "firstkey" PRIMARY KEY (code);'
     )
     assert (
         c.drop_statement == 'alter table "public"."films" drop constraint "firstkey";'
@@ -416,7 +402,7 @@ def asserts_pg(i, has_timescale=False):
     assert f.create_statement == FDEF
     assert (
         f.drop_statement
-        == 'drop function if exists "public"."films_f"(d date, def_t text, def_d date) cascade;'
+        == 'drop function if exists "public"."films_f"(d date, def_t text, def_d date);'
     )
     assert f.comment == "films_f comment"
     assert f2.comment is None
@@ -434,14 +420,7 @@ def asserts_pg(i, has_timescale=False):
     cons = i.constraints['"public"."films"."firstkey"']
     assert (
         cons.create_statement
-        == """DO
-    $$
-        BEGIN
-            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'firstkey') THEN
-                alter table "public"."films" add constraint "firstkey" PRIMARY KEY using index "firstkey";
-        END IF;
-    END
-$$;"""
+        == 'alter table "public"."films" add constraint "firstkey" PRIMARY KEY using index "firstkey";'
     )
 
     # tables
@@ -473,6 +452,8 @@ $$;"""
     assert g.create_statement == 'grant select on table {} to "postgres";'.format(
         t_films
     )
+    print(g.drop_statement)
+
     assert g.drop_statement == """DO
 $$
     BEGIN
