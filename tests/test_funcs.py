@@ -43,7 +43,7 @@ def test_kinds(db):
 
         assert (
             p.drop_statement
-            == 'drop procedure if exists "public"."proc"(a integer, b integer) cascade;'
+            == 'drop procedure if exists "public"."proc"(a integer, b integer);'
         )
 
 
