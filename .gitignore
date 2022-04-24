@@ -40,9 +40,10 @@ nosetests.xml
 .cache
 
 scratch
-poetry.lock
 .DS_Store
 pip-wheel-metadata
 
 tests/test_local_*
 scratch
+
+.idea
