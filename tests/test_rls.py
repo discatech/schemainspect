@@ -95,7 +95,8 @@ with check (manager = (CURRENT_USER)::text);
 
         assert (
             t.create_statement
-            == """create policy "account_managers"
+            == """drop policy if exists "account_managers" on "public"."accounts";
+create policy "account_managers"
 on "public"."accounts"
 as permissive
 for all
@@ -105,7 +106,7 @@ using ((manager = (CURRENT_USER)::text));
         )
 
         assert (
-            t.drop_statement == 'drop policy "account_managers" on "public"."accounts";'
+            t.drop_statement == 'drop policy if exists "account_managers" on "public"."accounts";'
         )
 
         s.execute(t.drop_statement)
@@ -134,7 +135,8 @@ using ((manager = (CURRENT_USER)::text));
 
         assert (
             t.create_statement
-            == """create policy "insert_gamer"
+            == """drop policy if exists "insert_gamer" on "public"."accounts";
+create policy "insert_gamer"
 on "public"."accounts"
 as permissive
 for insert
@@ -143,4 +145,4 @@ with check ((manager = (CURRENT_USER)::text));
 """
         )
 
-        assert t.drop_statement == 'drop policy "insert_gamer" on "public"."accounts";'
+        assert t.drop_statement == 'drop policy if exists "insert_gamer" on "public"."accounts";'

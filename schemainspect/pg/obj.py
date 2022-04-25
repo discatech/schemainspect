@@ -392,7 +392,7 @@ class InspectedTrigger(Inspected):
 
     @property
     def create_statement(self):
-        return self.full_definition + ";"
+        return 'drop trigger if exists "{}" on "{}"."{}";\n'.format(self.name, self.schema, self.table_name) + self.full_definition + ";"
 
     def __eq__(self, other):
         """
@@ -894,9 +894,16 @@ class InspectedConstraint(Inspected, TableRelated):
         else:
             using_clause = self.definition
 
-        USING = "alter table {} add constraint {} {};"
+        USING = """DO
+    $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '{3}') THEN
+                alter table {0} add constraint {1} {2};
+        END IF;
+    END
+$$;"""
 
-        return USING.format(self.quoted_full_table_name, self.quoted_name, using_clause)
+        return USING.format(self.quoted_full_table_name, self.quoted_name, using_clause, self.name)
 
     @property
     def quoted_full_name(self):
@@ -1095,7 +1102,8 @@ class InspectedComment(Inspected):
         )
 
 
-RLS_POLICY_CREATE = """create policy {name}
+RLS_POLICY_CREATE = """drop policy if exists {name} on {table_name};
+create policy {name}
 on {table_name}
 as {permissiveness}
 for {commandtype_keyword}
@@ -1156,7 +1164,7 @@ class InspectedRowPolicy(Inspected, TableRelated):
 
     @property
     def drop_statement(self):
-        return "drop policy {} on {};".format(
+        return "drop policy if exists {} on {};".format(
             self.quoted_name, self.quoted_full_table_name
         )
 
