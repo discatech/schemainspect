@@ -1,0 +1,23 @@
+# Requires Buildkit to be enabled for this to be used
+.docker
+.env
+.git
+.github
+.vscode
+
+.coverage
+
+__pycache__
+
+.venv
+
+*Dockerfile*
+*docker-compose*
+
+**/__tests__
+**/.DS_Store
+**/node_modules
+**/dist
+**/*.tsbuildinfo
+**/build
+**/.pytest_cache
